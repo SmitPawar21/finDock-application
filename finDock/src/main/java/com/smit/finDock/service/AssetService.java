@@ -1,5 +1,6 @@
 package com.smit.finDock.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.smit.finDock.entity.AssetsEntity;
 import com.smit.finDock.entity.PortfolioEntity;
 import com.smit.finDock.repository.AssetRepository;
 import com.smit.finDock.repository.PortfolioRepository;
+
+import jakarta.validation.constraints.AssertFalse.List;
 
 @Service
 public class AssetService {
@@ -40,4 +43,45 @@ public class AssetService {
 			return null;
 		}
 	}
+	
+	public ArrayList<AssetsEntity> getAssets() {
+		try {			
+			ArrayList<AssetsEntity> list = assetRepo.findAll();
+			return list;
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public AssetsEntity updateAsset(long asset_id, AssetDTO request) {
+		try {
+			AssetsEntity asset = assetRepo.findById(asset_id);
+
+		        asset.setAsset_name(request.getAsset_name());
+		        asset.setAsset_type(request.getAsset_type());
+		        asset.setQuantity(request.getQuantity());
+		        asset.setBuy_price(request.getBuy_price());
+		        asset.setCurrent_price(request.getCurrent_price());
+
+		    return assetRepo.save(asset);
+		    
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
+	public String deleteAsset(long asset_id) {
+		try {
+			AssetsEntity asset = assetRepo.findById(asset_id);
+			
+			assetRepo.delete(asset);
+			return "deleted";
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+	}
+	
 }

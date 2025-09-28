@@ -3,7 +3,6 @@ package com.smit.finDock.controller;
 import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smit.finDock.dto.AssetDTO;
+import com.smit.finDock.dto.GetAssetForPortDTO;
 import com.smit.finDock.entity.AssetsEntity;
 import com.smit.finDock.service.AssetService;
 
@@ -44,10 +43,10 @@ public class AssetController {
 		}
 	}
 	
-	@GetMapping("/get-all-assets")
-	public ResponseEntity<?> getAllAssets() {
+	@PostMapping("/get-all-assets")
+	public ResponseEntity<?> getAllAssets(@RequestBody GetAssetForPortDTO request) {
 		try {
-			ArrayList<AssetsEntity> result = assetService.getAssets();
+			ArrayList<AssetsEntity> result = assetService.getAssets(request.getPort_id());
 			
 			if(result == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to get assets, null is stored");

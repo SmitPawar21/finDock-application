@@ -1,7 +1,6 @@
 package com.smit.finDock.service;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -10,8 +9,6 @@ import com.smit.finDock.entity.AssetsEntity;
 import com.smit.finDock.entity.PortfolioEntity;
 import com.smit.finDock.repository.AssetRepository;
 import com.smit.finDock.repository.PortfolioRepository;
-
-import jakarta.validation.constraints.AssertFalse.List;
 
 @Service
 public class AssetService {
@@ -44,9 +41,10 @@ public class AssetService {
 		}
 	}
 	
-	public ArrayList<AssetsEntity> getAssets() {
+	public ArrayList<AssetsEntity> getAssets(long port_id) {
 		try {			
-			ArrayList<AssetsEntity> list = assetRepo.findAll();
+			PortfolioEntity portfolio = portRepo.findById(port_id);
+			ArrayList<AssetsEntity> list = assetRepo.findByPortfolio(portfolio);
 			return list;
 		} catch (Exception e) {
 			System.out.println(e);

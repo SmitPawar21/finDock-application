@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage"
 import { useContext } from "react"
 import { AuthContext } from "./context/AuthContext"
 import CryptoCoinsPage from "./pages/CryptoCoinsPage"
+import CoinDetailsPage from "./pages/CoinDetailPage"
 
 const ProtectedRoute = ({ children }) => {
   const { user, token, loading } = useContext(AuthContext);
@@ -39,6 +40,11 @@ function App() {
           <Route
             path="/coins"
             element={<ProtectedRoute> <CryptoCoinsPage /> </ProtectedRoute>}
+          />
+
+          <Route
+            path="/coin/:id"
+            element={<ProtectedRoute> <CoinDetailsPage /> </ProtectedRoute>}
           />
 
         </Routes>

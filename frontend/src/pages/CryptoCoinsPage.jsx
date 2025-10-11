@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, TrendingUp, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import Cookies from 'js-cookie';
+import CoinDetailsPage from './CoinDetailPage';
+import { useNavigate } from 'react-router-dom';
 
 const CryptoCoinsPage = () => {
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [searchPage, setSearchPage] = useState(0);
@@ -69,6 +72,45 @@ const CryptoCoinsPage = () => {
         } catch (e) {
             console.error(e);
         }
+    }
+
+    const handleCoinDetail = async (id) => {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/coins/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${Cookies.get('token')}`
+            }
+        });
+
+        const resdata = await response.json();
+        console.log(resdata);
+
+        const coinData = {
+            name: resdata.name,
+            symbol: resdata.symbol,
+            description: resdata.description,
+            price: resdata.market_data.current_price.usd,
+            marketCap: resdata.market_data.market_cap.usd,
+            marketRank: resdata.market_cap_rank,
+            circulatingSupply: resdata.circulating_supply,
+            maxSupply: resdata.market_data.max_supply,
+            change7d: resdata.market_data.price_change_percentage_7d,
+            change30d: resdata.market_data.price_change_percentage_30d,
+            ath: resdata.market_data.ath.usd,
+            athDate: resdata.market_data.ath_date.usd,
+            athChange: resdata.market_data.ath_change_percentage,
+            atl: resdata.market_data.atl.usd,
+            atlDate: resdata.market_data.atl_date.usd,
+            atlChange: resdata.market_data.atl_change_percentage,
+            totalVolume: resdata.market_data.total_volume.usd,
+            contractAdress: resdata.contract_address,
+            watchListUsers: resdata.watchlist_portfolio_users,
+            categories: resdata.categories,
+            smallImage: resdata.image.small,
+            largeImage: resdata.image.large
+        };
+
+        navigate(`/coin/${id}`, { state: { data: coinData } });
     }
 
     useEffect(() => {
@@ -146,6 +188,7 @@ const CryptoCoinsPage = () => {
                         {trendingCoins.map(coin => (
                             <div
                                 key={coin.id}
+                                onClick={() => handleCoinDetail(coin.item.id)}
                                 className="min-w-[280px] bg-[#1B3C53] rounded-xl p-6 hover:bg-[#234C6A] transition cursor-pointer"
                             >
                                 <div className="flex items-start justify-between mb-4">
@@ -231,7 +274,7 @@ const CryptoCoinsPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Search Results Pagination */}
                                 <div className="flex items-center justify-between mt-6">
                                     <p className="text-gray-400">
